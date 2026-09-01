@@ -171,6 +171,89 @@ body{
 }
 .alerta b{color:#FF8A97;font-weight:650}
 
+/* ---------- abas ---------- */
+.tabs{
+  display:flex;gap:4px;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:11px;padding:3px;margin-bottom:9px;
+}
+.tabs button{
+  flex:1;background:transparent;border:none;
+  color:var(--muted);font-family:var(--sans);font-size:14.5px;font-weight:550;
+  padding:9px 8px;border-radius:8px;cursor:pointer;
+}
+.tabs button[aria-selected="true"]{background:var(--surface-2);color:var(--ink)}
+
+/* ---------- protocolos ---------- */
+.proto{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:3px solid var(--ch,var(--muted));
+  border-radius:4px 11px 11px 4px;
+  margin-bottom:9px;
+}
+.proto>summary{
+  list-style:none;cursor:pointer;
+  padding:13px 14px;
+  display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+}
+.proto>summary::-webkit-details-marker{display:none}
+.proto>summary::after{
+  content:'';margin-left:auto;align-self:center;
+  width:8px;height:8px;flex:0 0 8px;
+  border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);
+  transform:rotate(45deg) translateY(-2px);
+}
+.proto[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
+.proto .tit{font-size:17px;font-weight:650;letter-spacing:-.01em}
+.proto .sub{font-size:12.5px;color:var(--muted)}
+.proto .corpo{padding:0 14px 6px}
+.intro{font-size:13.5px;color:var(--muted);padding-bottom:4px}
+
+.etapa{
+  display:grid;grid-template-columns:27px 1fr;gap:11px;
+  padding:12px 0;border-top:1px solid var(--line);
+}
+.marca{
+  width:27px;height:27px;flex:0 0 27px;
+  border:1.5px solid var(--line);background:transparent;
+  color:var(--muted);
+  border-radius:50%;
+  font-family:var(--num);font-size:12.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;margin-top:1px;
+}
+.marca[aria-pressed="true"]{
+  background:var(--ch,var(--ink));border-color:var(--ch,var(--ink));
+  color:var(--ground);font-size:14px;
+}
+.etapa.feito .txt{opacity:.42}
+.etapa .et{font-size:15.5px;font-weight:600;letter-spacing:-.005em}
+.etapa .ed{font-size:14px;color:#B9CBD3;margin-top:3px}
+.etapa .ed b{color:var(--ink);font-weight:600}
+
+.dchip{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 9px;
+  margin-top:7px;padding:7px 10px;
+  background:var(--surface-2);border-radius:8px;
+}
+.dchip .dn{font-size:13.5px;font-weight:600}
+.dchip .dt{font-size:13px;color:var(--muted)}
+.dchip .dv{
+  margin-left:auto;
+  font-family:var(--num);font-variant-numeric:tabular-nums;
+  font-size:16px;font-weight:600;color:var(--ch,var(--ink));
+}
+.rodape-proto{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  border-top:1px solid var(--line);padding:10px 0 12px;
+}
+.rodape-proto .cont{font-family:var(--num);font-size:12.5px;color:var(--muted)}
+.rodape-proto button{
+  background:var(--surface-2);border:1px solid var(--line);color:var(--muted);
+  border-radius:8px;padding:6px 12px;font-size:13px;font-family:var(--sans);cursor:pointer;
+}
+
 .vazio-busca{color:var(--muted);font-size:14.5px;padding:30px 4px;text-align:center}
 footer{color:#5E747D;font-size:12.5px;padding:26px 0 10px;line-height:1.6}
 @media (prefers-reduced-motion:no-preference){
@@ -185,6 +268,11 @@ footer{color:#5E747D;font-size:12.5px;padding:26px 0 10px;line-height:1.6}
   <div class="brand">
     <h1>Doses no Trauma</h1>
     <span>ataque e manutenção</span>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" id="tab-farm" aria-selected="true">Fármacos</button>
+    <button type="button" role="tab" id="tab-prot" aria-selected="false">Protocolos</button>
   </div>
 
   <div class="peso">
@@ -495,6 +583,211 @@ const D = [
  nota:'Considerar quando o choque persiste apesar de volume adequado e dose alta de vasopressor.'}
 ];
 
+/* ============================================================
+   PROTOCOLOS PASSO A PASSO
+   ============================================================ */
+const P = [
+
+/* ---------- avaliação primária ---------- */
+{id:'xabcde', cat:'via', nome:'Avaliação primária', sub:'XABCDE',
+ intro:'Sequência fixa. Só avance quando o item anterior estiver resolvido — achou o problema, trate na hora.',
+ etapas:[
+  {t:'X — Hemorragia exsanguinante',
+   d:'Compressão direta firme. Sangramento de membro que não cede: <b>torniquete</b> 5 a 7 cm acima da lesão, apertado até o sangramento parar e o pulso distal sumir. Anote a hora no próprio torniquete. Junção (axila, virilha, pescoço): curativo hemostático com compressão sustentada por 3 min.',
+   alerta:'Torniquete frouxo sangra mais que torniquete nenhum, porque bloqueia só o retorno venoso. Se não parou, aperte mais ou coloque um segundo ao lado.'},
+  {t:'A — Via aérea com proteção cervical',
+   d:'Pergunte o nome: quem responde com voz clara tem via aérea pérvia. Aspire sangue e secreção, retire corpo estranho, eleve o mento ou tracione a mandíbula, use cânula orofaríngea no inconsciente. Estabilização cervical manual em linha desde o primeiro contato.',
+   d2:'<b>Indicações de via aérea definitiva:</b> Glasgow de 8 ou menos, apneia, obstrução que não cede, trauma de face grave, queimadura de via aérea (rouquidão, estridor, escarro carbonáceo), incapacidade de manter oxigenação ou de proteger contra aspiração.'},
+  {t:'B — Ventilação e oxigenação',
+   d:'Exponha o tórax. Frequência, expansibilidade simétrica, ausculta nos dois ápices e bases, palpe crepitação, oximetria e capnografia. Oxigênio em máscara não reinalante a 15 L/min.',
+   d2:'Procure ativamente as lesões que matam agora: <b>pneumotórax hipertensivo</b>, pneumotórax aberto, hemotórax maciço e tórax instável com contusão pulmonar.'},
+  {t:'C — Circulação',
+   d:'Dois acessos venosos curtos e calibrosos (14G ou 16G) nas fossas antecubitais. Se falhar em 90 segundos, intraósseo. Colha tipagem, gasometria, hemograma e coagulograma no mesmo momento. Avalie pulso, pele, tempo de enchimento capilar e nível de consciência.',
+   d2:'Busque o sangue nos cinco lugares: <b>tórax, abdome, retroperitônio e pelve, ossos longos e o chão</b>. FAST e radiografias de tórax e pelve. Cinta pélvica se houver instabilidade.',
+   doses:[{n:'Ácido tranexâmico', txt:'ataque em 10 min, até 3 h do trauma', min:15,max:15,un:'mg/kg',teto:1000}]},
+  {t:'D — Estado neurológico',
+   d:'Escala de Glasgow, pupilas (tamanho, simetria, reatividade), déficit motor lateralizado e nível sensitivo. <b>Glicemia capilar em todo rebaixamento de consciência.</b>',
+   alerta:'Antes de atribuir o rebaixamento ao trauma cranioencefálico, descarte hipóxia, hipotensão, hipoglicemia, álcool e drogas.'},
+  {t:'E — Exposição e controle térmico',
+   d:'Dispa completamente, faça o rolamento em bloco e examine o dorso, o períneo e as axilas. Em seguida <b>cubra imediatamente</b>: manta térmica, sala aquecida, cristaloide e hemocomponentes aquecidos a 39 °C.',
+   alerta:'Hipotermia é iatrogênica na maioria das vezes e fecha o ciclo com acidose e coagulopatia. Abaixo de 34 °C a coagulação praticamente para, mesmo com fatores normais.'}
+ ]},
+
+/* ---------- SRI ---------- */
+{id:'sri', cat:'via', nome:'Sequência rápida de intubação', sub:'os 7 P',
+ intro:'Planeje em voz alta com a equipe antes de tocar no paciente. Diga quem faz o quê, qual o plano A e qual o plano de resgate.',
+ etapas:[
+  {t:'1. Preparo',
+   d:'Confira o material com o mnemônico <b>SOAPME</b>: sucção testada e ao alcance da mão direita; oxigênio; airway (tubo com balonete testado em dois tamanhos, bougie, laringoscópio com lâminas, videolaringoscópio, máscara laríngea); posicionamento; monitorização com capnografia; fármacos preparados e rotulados.',
+   d2:'Preveja dificuldade com o <b>LEMON</b>: olhar externo, avaliação 3‑3‑2, Mallampati, obstrução e mobilidade cervical. No trauma, o colar cervical e o sangue na via aérea já tornam toda intubação potencialmente difícil.'},
+  {t:'2. Pré-oxigenação',
+   d:'Três minutos com máscara não reinalante a 15 L/min, ou oito respirações profundas se houver pressa. Não interrompa: mantenha <b>cateter nasal a 15 L/min durante toda a apneia</b>. Se a saturação não sobe acima de 93%, use ventilação não invasiva ou bolsa-válvula-máscara com PEEP e vedação a quatro mãos.',
+   alerta:'Não pule esta etapa por causa da pressa. É ela que compra o tempo seguro para a laringoscopia.'},
+  {t:'3. Otimização hemodinâmica',
+   d:'<b>Ressuscite antes de intubar.</b> Corrija a hipotensão com sangue ou volume até PAS acima de 90 mmHg (acima de 110 no trauma cranioencefálico), corrija hipoxemia, acidose e hipocalcemia. Deixe o vasopressor pronto e conectado.',
+   d2:'Índice de choque (FC dividida pela PAS) acima de 0,9 prevê colapso pós-intubação: reduza a dose do indutor e antecipe o vasopressor.',
+   doses:[{n:'Noradrenalina', txt:'iniciar e titular', min:0.05,max:0.5,un:'mcg/kg/min'}],
+   alerta:'A parada cardíaca peri-intubação no trauma quase sempre é hipovolemia somada à dose cheia do indutor e à pressão positiva.'},
+  {t:'4. Pré-tratamento',
+   d:'Opcional. Considere fentanil para atenuar a resposta simpática à laringoscopia no trauma cranioencefálico ou na dissecção de aorta. Omita se o paciente estiver hipotenso.',
+   doses:[{n:'Fentanil', txt:'1 a 3 min antes da indução', min:1,max:3,un:'mcg/kg'}]},
+  {t:'5. Paralisia com indução',
+   d:'Indutor e bloqueador em sequência rápida, um atrás do outro, com o acesso correndo. Não ventile entre eles, salvo se a saturação cair.',
+   doses:[
+     {n:'Cetamina', txt:'estável', min:1,max:2,un:'mg/kg'},
+     {n:'Cetamina', txt:'em choque', min:0.5,max:1,un:'mg/kg'},
+     {n:'Etomidato', txt:'alternativa', min:0.3,max:0.3,un:'mg/kg'},
+     {n:'Rocurônio', txt:'dose de SRI', min:1.2,max:1.2,un:'mg/kg'},
+     {n:'Succinilcolina', txt:'se não houver contraindicação', min:1,max:1.5,un:'mg/kg'}
+   ],
+   alerta:'Succinilcolina é proibida com hipercalemia, esmagamento extenso, queimadura ou lesão medular há mais de 48 h e doença neuromuscular. Na dúvida, rocurônio.'},
+  {t:'6. Posicionamento e passagem',
+   d:'Abra a parte anterior do colar e mantenha <b>estabilização manual em linha</b> feita por um assistente. Cabeceira elevada ou proclive se a coluna permitir. Laringoscopia após 45 a 60 segundos. Use bougie na primeira tentativa se a visão for parcial. Manobra externa na laringe pelo próprio operador.',
+   alerta:'Máximo de três tentativas, e troque alguma coisa entre elas: operador, lâmina, posição ou dispositivo. Saturação abaixo de 90%, pare e ventile.'},
+  {t:'7. Pós-intubação',
+   d:'Confirme com <b>capnografia em onda</b> — é o padrão-ouro, ausculta isolada não basta. Insufle o balonete, fixe o tubo, anote a altura na arcada, radiografia de tórax. Instale sedação e analgesia contínuas imediatamente.',
+   d2:'Ventilação protetora: 6 a 8 mL/kg de peso predito, PEEP inicial de 5, alvo de PaCO2 de 35 a 38 mmHg. Reinstale o colar cervical.',
+   doses:[
+     {n:'Fentanil', txt:'manutenção', min:0.5,max:3,un:'mcg/kg/h'},
+     {n:'Midazolam', txt:'manutenção', min:0.02,max:0.1,un:'mg/kg/h'}
+   ],
+   alerta:'Paciente paralisado e acordado é dano evitável. A sedação entra antes de o bloqueador passar.'}
+ ]},
+
+/* ---------- via aérea de resgate ---------- */
+{id:'falha', cat:'via', nome:'Falha de via aérea', sub:'plano de resgate',
+ intro:'Acione quando houver três tentativas sem sucesso, ou a qualquer momento em que não conseguir intubar nem oxigenar. Fale em voz alta: "via aérea falha, plano B".',
+ etapas:[
+  {t:'Plano A — otimizar a laringoscopia',
+   d:'Bougie, manobra externa na laringe, reposicionar a cabeça, aspirar de novo, videolaringoscópio, trocar para o operador mais experiente. Uma mudança por tentativa.'},
+  {t:'Plano B — dispositivo supraglótico',
+   d:'Máscara laríngea de segunda geração no tamanho certo para o peso. Ventile, oxigene e reorganize. Pode servir de conduto para intubação ou de ponte até a via cirúrgica.'},
+  {t:'Plano C — bolsa-válvula-máscara a quatro mãos',
+   d:'Duas pessoas: uma faz a vedação com as duas mãos em C‑E e tração de mandíbula, a outra ventila. Cânula orofaríngea e nasofaríngea juntas. Objetivo é oxigenar, não normalizar o CO2.'},
+  {t:'Plano D — cricotireoidostomia cirúrgica',
+   d:'Não conseguiu intubar nem oxigenar: <b>decida cedo</b>. Palpe a membrana cricotireóidea, incisão vertical na pele de 3 a 4 cm, dissecção romba, incisão horizontal na membrana, gancho traqueal ou cabo do bisturi para manter o orifício, bougie, tubo 6.0 e insuflar o balonete. Confirme com capnografia.',
+   alerta:'Contraindicada abaixo de 12 anos: nessa faixa faça punção cricotireóidea com cateter 14G e oxigenação transtraqueal como medida temporária, com transporte imediato para via aérea definitiva.'}
+ ]},
+
+/* ---------- reposição volêmica ---------- */
+{id:'volume', cat:'hem', nome:'Reposição volêmica', sub:'ressuscitação de controle de danos',
+ intro:'O princípio mudou: no trauma sangrando, sangue cedo e cristaloide de menos. Volume não substitui o controle cirúrgico do sangramento.',
+ etapas:[
+  {t:'1. Acesso e coleta',
+   d:'Dois acessos periféricos 14G ou 16G. Sem sucesso em 90 segundos, <b>intraósseo</b> (tíbia proximal ou úmero). Colha na punção: tipagem, gasometria com lactato, hemograma, coagulograma e beta‑HCG quando aplicável.'},
+  {t:'2. Bólus inicial de cristaloide',
+   d:'Ringer lactato ou solução balanceada <b>aquecida</b>. Adulto: até 1 L. Criança: 20 mL/kg. Este é o teto, não a meta.',
+   doses:[{n:'Ringer lactato', txt:'bólus pediátrico', min:20,max:20,un:'mL/kg',teto:1000}],
+   alerta:'Cristaloide em volume alto dilui fatores de coagulação, desloca o coágulo já formado, agrava a acidose e resfria o paciente. Soro fisiológico em grande volume ainda acrescenta acidose hiperclorêmica.'},
+  {t:'3. Classificar a resposta',
+   d:'<b>Resposta rápida:</b> normalizou e manteve — perda pequena, provavelmente já parou de sangrar. <b>Resposta transitória:</b> melhorou e piorou de novo — segue sangrando, precisa de sangue e de controle da fonte. <b>Sem resposta:</b> hemorragia maciça ou choque não hemorrágico; leve para o centro cirúrgico.'},
+  {t:'4. Passar a hemocomponentes',
+   d:'Resposta transitória ou ausente, ou hemorragia evidente: <b>ative o protocolo de transfusão maciça</b> em proporção próxima de 1:1:1 de hemácias, plasma e plaquetas. Sangue O negativo ou O positivo sem prova cruzada enquanto a tipagem não sai.'},
+  {t:'5. Fármacos adjuvantes',
+   d:'Ácido tranexâmico o mais cedo possível, dentro de 3 h. Cálcio a cada 4 unidades de hemocomponentes ou guiado pelo cálcio ionizado.',
+   doses:[
+     {n:'Ácido tranexâmico', txt:'ataque em 10 min', min:15,max:15,un:'mg/kg',teto:1000},
+     {n:'Ácido tranexâmico', txt:'manutenção por 8 h', min:2,max:2,un:'mg/kg/h'},
+     {n:'Gluconato de cálcio 10%', txt:'IV lento', min:0.2,max:0.5,un:'mL/kg',teto:30}
+   ]},
+  {t:'6. Alvos e reavaliação',
+   d:'<b>Hipotensão permissiva</b> com PAS de 80 a 90 mmHg, ou pulso radial palpável e paciente conversando, até o controle da hemorragia. Acompanhe lactato, excesso de base, diurese, cálcio ionizado e temperatura.',
+   alerta:'A hipotensão permissiva não vale para trauma cranioencefálico, onde o alvo é PAS de pelo menos 110 mmHg, nem para lesão medular. Também não vale em transporte prolongado nem no idoso.'}
+ ]},
+
+/* ---------- choque hemorrágico ---------- */
+{id:'chem', cat:'hem', nome:'Choque hemorrágico', sub:'classes e conduta',
+ intro:'A hemorragia responde por quase toda morte evitável no trauma. Todo choque no trauma é hemorrágico até prova em contrário.',
+ etapas:[
+  {t:'Classe I — até 15% da volemia',
+   d:'Até cerca de 750 mL no adulto. FC abaixo de 100, pressão e pressão de pulso normais, diurese acima de 30 mL/h, ansiedade leve. <b>Conduta:</b> cristaloide, observação.'},
+  {t:'Classe II — 15 a 30%',
+   d:'750 a 1500 mL. FC de 100 a 120, pressão sistólica ainda normal com <b>pressão de pulso estreita</b>, FR de 20 a 30, diurese de 20 a 30 mL/h, ansioso. <b>Conduta:</b> cristaloide e considerar sangue conforme a resposta.',
+   alerta:'A pressão sistólica normal engana. A queda da pressão de pulso e a taquicardia aparecem antes — pressão baixa no jovem já é perda avançada.'},
+  {t:'Classe III — 31 a 40%',
+   d:'1500 a 2000 mL. FC de 120 a 140, <b>hipotensão instalada</b>, FR de 30 a 40, diurese de 5 a 15 mL/h, confusão. <b>Conduta:</b> hemocomponentes, protocolo de transfusão maciça e controle cirúrgico da fonte.'},
+  {t:'Classe IV — acima de 40%',
+   d:'Acima de 2000 mL. FC acima de 140 ou bradicardia pré-parada, hipotensão grave, pressão de pulso muito estreita, diurese desprezível, letargia. <b>Conduta:</b> transfusão maciça, centro cirúrgico imediato, considerar toracotomia de reanimação nas indicações específicas.'},
+  {t:'Corrigir a tríade letal',
+   d:'Trate os três juntos, não em sequência: <b>hipotermia</b> (aquecer ambiente, mantas, fluidos a 39 °C), <b>acidose</b> (perfusão e controle da hemorragia, não bicarbonato de rotina) e <b>coagulopatia</b> (plasma, plaquetas, fibrinogênio, ácido tranexâmico, cálcio).'},
+  {t:'Armadilhas na avaliação',
+   d:'Idoso em uso de betabloqueador não taquicardiza. O jovem mantém a pressão até o colapso súbito. Gestante tolera perda de até 30% antes de alterar sinais vitais, à custa do feto. Atleta tem bradicardia basal. <b>Lactato e excesso de base detectam o choque antes dos sinais vitais.</b>'}
+ ]},
+
+/* ---------- choque obstrutivo ---------- */
+{id:'cobs', cat:'circ', nome:'Choque obstrutivo', sub:'pneumotórax hipertensivo e tamponamento',
+ intro:'Reversível em minutos com procedimento à beira do leito. Suspeite sempre que o choque não responder a volume.',
+ etapas:[
+  {t:'Reconhecer o pneumotórax hipertensivo',
+   d:'Diagnóstico <b>clínico</b>: desconforto respiratório, hipotensão, ausência de murmúrio de um lado, hipertimpanismo, turgência jugular, desvio de traqueia (sinal tardio e nem sempre presente). Na ultrassonografia, ausência de deslizamento pleural.',
+   alerta:'Não espere a radiografia. Esperar exame de imagem para tratar pneumotórax hipertensivo é erro clássico e fatal.'},
+  {t:'Descomprimir',
+   d:'Cateter sobre agulha de pelo menos 8 cm no <b>5º espaço intercostal, na linha axilar anterior</b>, logo acima da borda superior da costela inferior. A alternativa é o 2º espaço na linha hemiclavicular, com falha mais frequente em adultos por causa da espessura da parede.'},
+  {t:'Drenar',
+   d:'A punção é medida temporária. Siga com <b>drenagem torácica em selo d\'água</b>, dreno de 28 a 32 Fr, no 5º espaço intercostal na linha axilar média, sob anestesia local e técnica estéril.'},
+  {t:'Reconhecer o tamponamento cardíaco',
+   d:'Trauma penetrante em "zona da morte" (entre as linhas hemiclaviculares, do rebordo costal à fúrcula). <b>Tríade de Beck:</b> hipotensão, turgência jugular e bulhas abafadas — completa em poucos casos. FAST com líquido pericárdico confirma.',
+   alerta:'A turgência jugular pode estar ausente se o paciente também estiver hipovolêmico. Ausência de jugular estufada não afasta tamponamento.'},
+  {t:'Tratar o tamponamento',
+   d:'Volume para melhorar transitoriamente a pré-carga enquanto prepara o definitivo. <b>Pericardiocentese guiada por ultrassom</b> como ponte, mas o tratamento é cirúrgico: janela pericárdica ou toracotomia. Toracotomia de reanimação se houver parada presenciada com trauma penetrante torácico e sinais de vida recentes.'}
+ ]},
+
+/* ---------- choque neurogênico ---------- */
+{id:'cneu', cat:'neuro', nome:'Choque neurogênico', sub:'lesão medular',
+ intro:'Diagnóstico de exclusão. Só é neurogênico depois de descartar hemorragia — os dois coexistem com frequência.',
+ etapas:[
+  {t:'Reconhecer o padrão',
+   d:'Lesão medular acima de T6 com perda do tônus simpático: <b>hipotensão com bradicardia</b>, pele quente, seca e corada, extremidades bem perfundidas, sem taquicardia compensatória. Contrasta com o choque hemorrágico, onde a pele é fria, pálida e úmida e há taquicardia.',
+   alerta:'Choque medular é outra coisa: significa a perda transitória de reflexos e tônus abaixo da lesão, não o quadro hemodinâmico. Não confunda os termos.'},
+  {t:'Descartar hemorragia primeiro',
+   d:'FAST, radiografia de tórax e pelve, exame do abdome. Um politraumatizado com lesão medular pode estar sangrando e não sentir dor abdominal por causa do nível sensitivo.'},
+  {t:'Volume com moderação',
+   d:'Reponha até a euvolemia, sem excesso. O problema aqui é <b>vasoplegia, não perda de volume</b> — insistir em cristaloide gera edema pulmonar e piora a perfusão medular.'},
+  {t:'Vasopressor e cronotrópico',
+   d:'Noradrenalina é a primeira escolha pelo efeito alfa e beta combinado. Atropina para bradicardia sintomática; em casos refratários, marca-passo transcutâneo.',
+   doses:[
+     {n:'Noradrenalina', txt:'titular pela pressão média', min:0.05,max:1,un:'mcg/kg/min'},
+     {n:'Atropina', txt:'bradicardia sintomática', min:0.02,max:0.02,un:'mg/kg',piso:0.1,teto:1}
+   ]},
+  {t:'Alvo de perfusão medular',
+   d:'Manter <b>pressão arterial média entre 85 e 90 mmHg pelos primeiros 7 dias</b>, com o objetivo de preservar a perfusão da medula lesada. Evite hipóxia e hipotermia. Discussão precoce com a neurocirurgia.'}
+ ]},
+
+/* ---------- TCE grave ---------- */
+{id:'tce', cat:'neuro', nome:'TCE grave', sub:'prevenção da lesão secundária',
+ intro:'A lesão primária já aconteceu. Todo o cuidado é para evitar a lesão secundária — e os dois maiores vilões são hipotensão e hipóxia.',
+ etapas:[
+  {t:'Alvos fisiológicos',
+   d:'<b>PAS de pelo menos 110 mmHg</b> (100 mmHg entre 50 e 69 anos). <b>SpO2 acima de 94% e PaO2 acima de 60 mmHg.</b> Normocapnia com PaCO2 de 35 a 38 mmHg. Normoglicemia, normonatremia e normotermia.',
+   alerta:'Um único episódio de PAS abaixo de 90 mmHg ou de hipóxia dobra a mortalidade no trauma cranioencefálico grave.'},
+  {t:'Medidas gerais',
+   d:'Cabeceira a 30°, cabeça em posição neutra, <b>colar cervical frouxo</b> no pescoço para não obstruir o retorno venoso jugular. Sedação e analgesia adequadas, controle de dor e agitação, prevenção de tosse e de esforço.'},
+  {t:'Ácido tranexâmico',
+   d:'Dentro de 3 h do trauma, em pacientes com Glasgow de 9 a 15 e tomografia com sangramento intracraniano (CRASH‑3).',
+   doses:[
+     {n:'Ácido tranexâmico', txt:'ataque em 10 min', min:15,max:15,un:'mg/kg',teto:1000},
+     {n:'Ácido tranexâmico', txt:'manutenção por 8 h', min:2,max:2,un:'mg/kg/h'}
+   ]},
+  {t:'Sinais de herniação',
+   d:'<b>Anisocoria com pupila fixa</b>, postura de decorticação ou descerebração, queda de mais de 2 pontos no Glasgow, tríade de Cushing (hipertensão, bradicardia e respiração irregular). Aja imediatamente e chame a neurocirurgia.'},
+  {t:'Osmoterapia no resgate',
+   d:'Salina hipertônica é preferida no paciente hipotenso, porque expande o volume. Manitol exige euvolemia e pressão adequada.',
+   doses:[
+     {n:'Salina hipertônica 3%', txt:'em 15 a 20 min', min:3,max:5,un:'mL/kg'},
+     {n:'Manitol 20%', txt:'em 15 a 20 min', min:0.25,max:1,un:'g/kg'}
+   ],
+   alerta:'Hiperventilação apenas como ponte de minutos na herniação iminente, com PaCO2 de 30 a 35 mmHg. Hiperventilar de rotina causa isquemia cerebral por vasoconstrição.'},
+  {t:'Profilaxia de convulsão',
+   d:'Por 7 dias no trauma cranioencefálico grave, para reduzir crises precoces. Não altera a incidência de epilepsia tardia.',
+   doses:[
+     {n:'Fenitoína', txt:'ataque, máximo 50 mg/min', min:15,max:20,un:'mg/kg'},
+     {n:'Levetiracetam', txt:'ataque em 15 min', min:20,max:20,un:'mg/kg',teto:3000}
+   ]},
+  {t:'Imagem e destino',
+   d:'Tomografia de crânio sem contraste o mais precoce possível, assim que a via aérea e a hemodinâmica permitirem. Reavaliação neurológica seriada. Defina cedo com a neurocirurgia a indicação de monitorização de pressão intracraniana ou de craniectomia.'}
+ ]}
+];
+
 /* ---------- utilidades ---------- */
 const fmt = n => {
   if(!isFinite(n)) return '—';
@@ -521,7 +814,9 @@ function calcular(d, peso){
   return (Math.abs(a - b) < 1e-9) ? fmt(a) + ' ' + u : fmt(a) + ' – ' + fmt(b) + ' ' + u;
 }
 
-let peso = 70, filtro = 'todos', termo = '';
+let peso = 70, filtro = 'todos', termo = '', modo = 'farm';
+const abertos = new Set();   // protocolos expandidos
+const feitos  = new Set();   // etapas marcadas
 
 /* ---------- chips ---------- */
 const elChips = document.getElementById('chips');
@@ -537,6 +832,11 @@ CATS.forEach(c => {
 const elLista = document.getElementById('lista');
 
 function render(){
+  elChips.style.display = (modo === 'farm') ? '' : 'none';
+  if(modo === 'farm') renderFarmacos(); else renderProtocolos();
+}
+
+function renderFarmacos(){
   const t = termo.trim().toLowerCase();
   const itens = D.filter(d => {
     if(filtro !== 'todos' && d.cat !== filtro) return false;
@@ -590,6 +890,64 @@ function bloco(rotulo, d, item){
   return out;
 }
 
+/* ---------- protocolos ---------- */
+function renderProtocolos(){
+  const t = termo.trim().toLowerCase();
+  const itens = P.filter(p => {
+    if(!t) return true;
+    const blob = JSON.stringify(p).toLowerCase();
+    return blob.includes(t);
+  });
+
+  if(!itens.length){
+    elLista.innerHTML = '<p class="vazio-busca">Nenhum protocolo encontrado.</p>';
+    return;
+  }
+
+  let html = '';
+  itens.forEach(p => {
+    const cat = CATS.find(c => c.id === p.cat);
+    const cor = cat ? cat.cor : 'var(--muted)';
+    const aberto = abertos.has(p.id) ? ' open' : '';
+    const total = p.etapas.length;
+    const ok = p.etapas.filter((_, i) => feitos.has(p.id + ':' + i)).length;
+
+    html += '<details class="proto" data-p="' + p.id + '" style="--ch:' + cor + '"' + aberto + '>';
+    html += '<summary><span class="tit">' + p.nome + '</span>'
+          + (p.sub ? '<span class="sub">' + p.sub + '</span>' : '') + '</summary>';
+    html += '<div class="corpo">';
+    if(p.intro) html += '<p class="intro">' + p.intro + '</p>';
+
+    p.etapas.forEach((e, i) => {
+      const chave = p.id + ':' + i;
+      const marcado = feitos.has(chave);
+      html += '<div class="etapa' + (marcado ? ' feito' : '') + '">';
+      html += '<button class="marca" type="button" data-k="' + chave + '" aria-pressed="' + marcado
+            + '" aria-label="Marcar etapa ' + (i+1) + '">' + (marcado ? '✓' : (i+1)) + '</button>';
+      html += '<div class="txt">';
+      html += '<div class="et">' + e.t + '</div>';
+      if(e.d)  html += '<div class="ed">' + e.d + '</div>';
+      if(e.d2) html += '<div class="ed">' + e.d2 + '</div>';
+
+      if(e.doses) e.doses.forEach(dd => {
+        const v = calcular(dd, peso);
+        html += '<div class="dchip"><span class="dn">' + dd.n + '</span>'
+              + (dd.txt ? '<span class="dt">' + dd.txt + '</span>' : '')
+              + '<span class="dv">' + (v || '—') + '</span></div>';
+      });
+
+      if(e.alerta) html += '<p class="alerta"><b>Atenção.</b> ' + e.alerta + '</p>';
+      html += '</div></div>';
+    });
+
+    html += '<div class="rodape-proto"><span class="cont">' + ok + ' de ' + total + ' etapas</span>'
+          + '<button type="button" class="zerar" data-p="' + p.id + '">Reiniciar</button></div>';
+    html += '</div></details>';
+  });
+
+  elLista.innerHTML = html;
+}
+
 /* ---------- eventos ---------- */
 const elPeso = document.getElementById('peso');
 elPeso.addEventListener('input', e => {
@@ -600,7 +958,45 @@ elPeso.addEventListener('input', e => {
 document.querySelectorAll('.quick button').forEach(b => {
   b.onclick = () => { elPeso.value = b.dataset.p; peso = +b.dataset.p; render(); };
 });
-document.getElementById('busca').addEventListener('input', e => { termo = e.target.value; render(); });
+const elBusca = document.getElementById('busca');
+elBusca.addEventListener('input', e => { termo = e.target.value; render(); });
+
+/* abas */
+const tFarm = document.getElementById('tab-farm');
+const tProt = document.getElementById('tab-prot');
+function trocarAba(novo){
+  modo = novo;
+  tFarm.setAttribute('aria-selected', modo === 'farm');
+  tProt.setAttribute('aria-selected', modo === 'prot');
+  elBusca.placeholder = (modo === 'farm')
+    ? 'Buscar fármaco, classe ou indicação'
+    : 'Buscar protocolo ou conduta';
+  render();
+}
+tFarm.onclick = () => trocarAba('farm');
+tProt.onclick = () => trocarAba('prot');
+
+/* marcar etapa, reiniciar e lembrar o que está aberto */
+elLista.addEventListener('click', e => {
+  const m = e.target.closest('.marca');
+  if(m){
+    const k = m.dataset.k;
+    feitos.has(k) ? feitos.delete(k) : feitos.add(k);
+    render();
+    return;
+  }
+  const z = e.target.closest('.zerar');
+  if(z){
+    [...feitos].filter(k => k.startsWith(z.dataset.p + ':')).forEach(k => feitos.delete(k));
+    render();
+  }
+});
+
+elLista.addEventListener('toggle', e => {
+  const d = e.target;
+  if(!d.classList || !d.classList.contains('proto')) return;
+  d.open ? abertos.add(d.dataset.p) : abertos.delete(d.dataset.p);
+}, true);
 document.getElementById('okAviso').onclick = () => { document.getElementById('aviso').remove(); };
 
 render();

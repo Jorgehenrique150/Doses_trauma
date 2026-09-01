@@ -1,4 +1,4 @@
-const CACHE = 'doses-trauma-v1';
+const CACHE = 'doses-trauma-v2';
 const ARQUIVOS = [
   './',
   './index.html',
