@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Doses no Trauma</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0E1418">
+<meta name="description" content="Doses de ataque e manutenção dos fármacos usados no trauma, calculadas por peso.">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trauma">
+<style>
+:root{
+  --ground:#0E1418;
+  --surface:#172127;
+  --surface-2:#1E2A31;
+  --line:#2A3941;
+  --ink:#E8F0F3;
+  --muted:#8FA6B1;
+  --via:#7BE3A4;
+  --sed:#8FD3FF;
+  --hem:#FF5C6C;
+  --circ:#4FC3F7;
+  --neuro:#FFD166;
+  --inf:#C792EA;
+  --esp:#FF9E64;
+  --sans: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --num: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:64px;
+}
+.wrap{max-width:720px;margin:0 auto;padding:0 14px}
+
+/* ---------- barra fixa ---------- */
+.monitor{
+  position:sticky;top:0;z-index:50;
+  background:linear-gradient(180deg,#0E1418 78%,rgba(14,20,24,0));
+  padding-top:10px;
+}
+.brand{display:flex;align-items:baseline;gap:9px;padding-bottom:9px}
+.brand h1{font-size:19px;font-weight:650;letter-spacing:-.015em;margin:0}
+.brand span{font-size:12.5px;color:var(--muted)}
+
+.peso{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:9px 12px;
+}
+.peso label{font-size:13px;color:var(--muted);white-space:nowrap}
+.peso input{
+  width:88px;
+  background:transparent;border:none;outline:none;
+  color:var(--via);
+  font-family:var(--num);
+  font-size:31px;font-weight:600;
+  font-variant-numeric:tabular-nums;
+  text-align:right;
+  padding:0;
+}
+.peso input:focus-visible{outline:2px solid var(--via);outline-offset:4px;border-radius:4px}
+.peso .kg{font-family:var(--num);font-size:16px;color:var(--muted);margin-left:-6px}
+.peso .quick{margin-left:auto;display:flex;gap:6px}
+.peso .quick button{
+  background:var(--surface-2);border:1px solid var(--line);color:var(--muted);
+  font-family:var(--num);font-size:12.5px;
+  border-radius:7px;padding:5px 8px;cursor:pointer;
+}
+.peso .quick button:hover{color:var(--ink);border-color:#3B4E58}
+
+.busca{margin-top:9px;position:relative}
+.busca input{
+  width:100%;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:11px;
+  color:var(--ink);
+  font-family:var(--sans);font-size:15.5px;
+  padding:11px 13px;
+  outline:none;
+}
+.busca input::placeholder{color:#63797F}
+.busca input:focus{border-color:#3B4E58}
+
+.chips{display:flex;gap:7px;overflow-x:auto;padding:10px 0 12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--muted);
+  border-radius:20px;
+  padding:6px 13px;
+  font-size:13.5px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink);font-weight:600}
+
+/* ---------- aviso ---------- */
+.aviso{
+  border:1px solid #4A2F33;
+  background:#1F1417;
+  border-radius:11px;
+  padding:13px 14px;
+  margin-bottom:16px;
+  font-size:13.5px;
+  color:#F0C9CE;
+}
+.aviso strong{color:#FF9AA5;font-weight:650}
+.aviso button{
+  margin-top:10px;background:#3A2226;border:1px solid #5A363C;color:#FFD7DC;
+  border-radius:8px;padding:7px 14px;font-size:13.5px;font-family:var(--sans);cursor:pointer;
+}
+
+/* ---------- cartões ---------- */
+.grupo{margin:22px 0 9px;font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:.01em}
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:3px solid var(--ch,var(--muted));
+  border-radius:4px 11px 11px 4px;
+  padding:13px 14px;
+  margin-bottom:9px;
+}
+.card h2{
+  margin:0;font-size:17.5px;font-weight:650;letter-spacing:-.01em;
+  display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+}
+.card h2 em{font-style:normal;font-size:12.5px;color:var(--muted);font-weight:400}
+.apres{font-size:12.5px;color:var(--muted);margin:3px 0 0;font-family:var(--num)}
+
+.linha{
+  display:grid;grid-template-columns:74px 1fr;gap:10px;
+  margin-top:11px;padding-top:11px;border-top:1px solid var(--line);
+}
+.linha .rot{font-size:12.5px;color:var(--muted);padding-top:3px}
+.linha .val{min-width:0}
+.dose{font-size:15px}
+.calc{
+  font-family:var(--num);
+  font-variant-numeric:tabular-nums;
+  font-size:22px;font-weight:600;
+  color:var(--ch,var(--ink));
+  margin-top:2px;letter-spacing:-.02em;
+}
+.calc.vazio{font-size:14px;font-weight:400;color:#5E747D}
+.nota{font-size:13px;color:var(--muted);margin-top:5px}
+
+.alerta{
+  margin-top:11px;
+  font-size:13px;
+  color:#FFC9CE;
+  background:#231519;
+  border-radius:8px;
+  padding:8px 10px;
+}
+.alerta b{color:#FF8A97;font-weight:650}
+
+.vazio-busca{color:var(--muted);font-size:14.5px;padding:30px 4px;text-align:center}
+footer{color:#5E747D;font-size:12.5px;padding:26px 0 10px;line-height:1.6}
+@media (prefers-reduced-motion:no-preference){
+  .card{transition:border-color .12s ease}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="monitor">
+  <div class="brand">
+    <h1>Doses no Trauma</h1>
+    <span>ataque e manutenção</span>
+  </div>
+
+  <div class="peso">
+    <label for="peso">Peso</label>
+    <input id="peso" type="number" inputmode="decimal" min="1" max="250" step="1" value="70" aria-label="Peso do paciente em quilos">
+    <span class="kg">kg</span>
+    <div class="quick">
+      <button type="button" data-p="10">10</button>
+      <button type="button" data-p="30">30</button>
+      <button type="button" data-p="70">70</button>
+      <button type="button" data-p="90">90</button>
+    </div>
+  </div>
+
+  <div class="busca">
+    <input id="busca" type="search" placeholder="Buscar fármaco, classe ou indicação" aria-label="Buscar">
+  </div>
+
+  <div class="chips" id="chips" role="group" aria-label="Filtrar por categoria"></div>
+</div>
+
+<div class="aviso" id="aviso">
+  <strong>Confira antes de administrar.</strong> Este app é material de estudo e consulta rápida. As doses seguem referências gerais de trauma (ATLS, PHTLS, CRASH‑2/3, protocolos brasileiros) e não substituem a bula, o protocolo da sua instituição nem o julgamento clínico. Ajuste para idade, função renal e hepática, gestação e estado hemodinâmico.
+  <br><button type="button" id="okAviso">Entendi</button>
+</div>
+
+<main id="lista"></main>
+
+<footer>
+  Doses de ataque calculadas para o peso informado; use peso ideal ou ajustado quando indicado.<br>
+  Revise cada valor com a referência da sua instituição antes do uso.
+</footer>
+
+</div>
+
+<script>
+const CATS = [
+  {id:'todos', nome:'Todos'},
+  {id:'via',   nome:'Via aérea e SRI',        cor:'var(--via)'},
+  {id:'sed',   nome:'Analgesia e sedação',    cor:'var(--sed)'},
+  {id:'hem',   nome:'Hemorragia',             cor:'var(--hem)'},
+  {id:'circ',  nome:'Choque e PCR',           cor:'var(--circ)'},
+  {id:'neuro', nome:'TCE e convulsão',        cor:'var(--neuro)'},
+  {id:'inf',   nome:'Antibióticos e tétano',  cor:'var(--inf)'},
+  {id:'esp',   nome:'Situações especiais',    cor:'var(--esp)'}
+];
+
+// unidades: mg/kg, mcg/kg, g/kg, mL/kg, U/kg, mEq/kg, mg/kg/h, mcg/kg/h, mcg/kg/min, U/kg/h
+const D = [
+
+/* ============ VIA AÉREA E SEQUÊNCIA RÁPIDA ============ */
+{cat:'via', nome:'Fentanil', sub:'pré-tratamento da SRI', apres:'50 mcg/mL — ampola 2 mL e 10 mL',
+ ataque:{txt:'1–3 mcg/kg IV lento, 1–3 min antes da indução', min:1, max:3, un:'mcg/kg'},
+ manut:{txt:'ver Analgesia e sedação'},
+ alerta:'Atenua a resposta simpática à laringoscopia (útil no TCE). Pode precipitar hipotensão no choque hemorrágico — reduza ou omita.'},
+
+{cat:'via', nome:'Etomidato', apres:'2 mg/mL — ampola 10 mL',
+ ataque:{txt:'0,3 mg/kg IV em bolus (0,15–0,2 mg/kg se instável)', min:0.3, max:0.3, un:'mg/kg'},
+ manut:{txt:'não usar em infusão contínua'},
+ nota:'Início 15–45 s, duração 3–12 min. Melhor estabilidade hemodinâmica entre os indutores.',
+ alerta:'Supressão adrenal transitória mesmo em dose única — monitore no choque prolongado. Sem efeito analgésico: associe opioide.'},
+
+{cat:'via', nome:'Cetamina', sub:'indução', apres:'50 mg/mL — frasco 10 mL',
+ ataque:{txt:'1–2 mg/kg IV (0,5–1 mg/kg se choque). IM: 4 mg/kg', min:1, max:2, un:'mg/kg'},
+ manut:{txt:'0,5–1,5 mg/kg/h para sedação contínua', min:0.5, max:1.5, un:'mg/kg/h'},
+ nota:'Preserva drive respiratório e tônus vascular; broncodilatador. Indutor de escolha no trauma instável.',
+ alerta:'No choque profundo o efeito simpaticomimético falha e pode haver depressão miocárdica — use a dose reduzida.'},
+
+{cat:'via', nome:'Midazolam', sub:'indução', apres:'5 mg/mL — ampola 3 mL e 10 mL',
+ ataque:{txt:'0,1–0,3 mg/kg IV', min:0.1, max:0.3, un:'mg/kg'},
+ manut:{txt:'0,02–0,1 mg/kg/h em infusão', min:0.02, max:0.1, un:'mg/kg/h'},
+ alerta:'Indutor ruim no trauma hemorrágico: hipotensão dose-dependente e início lento. Prefira cetamina ou etomidato.'},
+
+{cat:'via', nome:'Propofol', sub:'indução', apres:'10 mg/mL — frasco 20 mL e 100 mL',
+ ataque:{txt:'1–2 mg/kg IV (0,5 mg/kg se instável)', min:1, max:2, un:'mg/kg'},
+ manut:{txt:'1–4 mg/kg/h', min:1, max:4, un:'mg/kg/h'},
+ alerta:'Vasodilatação e queda de débito — evite como indutor no choque não ressuscitado. Atenção à síndrome da infusão de propofol em doses altas e prolongadas.'},
+
+{cat:'via', nome:'Succinilcolina', sub:'bloqueio neuromuscular', apres:'pó 100 mg — reconstituir para 20 mg/mL',
+ ataque:{txt:'1–1,5 mg/kg IV. IM: 3–4 mg/kg', min:1, max:1.5, un:'mg/kg'},
+ manut:{txt:'não aplicável — duração 5–10 min'},
+ alerta:'Contraindicada com hipercalemia, queimadura ou lesão medular há mais de 48–72 h, síndrome de esmagamento extensa, denervação e doença neuromuscular. Na dúvida, use rocurônio.'},
+
+{cat:'via', nome:'Rocurônio', sub:'bloqueio neuromuscular', apres:'10 mg/mL — frasco 5 mL',
+ ataque:{txt:'1,2 mg/kg IV para SRI (0,6 mg/kg em via aérea eletiva)', min:1.2, max:1.2, un:'mg/kg'},
+ manut:{txt:'0,3–0,6 mg/kg/h ou bólus de 0,15 mg/kg', min:0.3, max:0.6, un:'mg/kg/h'},
+ nota:'Início 45–60 s na dose de SRI; duração 45–70 min.',
+ alerta:'Paralisia longa em paciente sem sedação adequada é erro grave: garanta sedação e analgesia contínuas.'},
+
+{cat:'via', nome:'Sugamadex', sub:'reversão do rocurônio', apres:'100 mg/mL — frasco 2 mL e 5 mL',
+ ataque:{txt:'16 mg/kg IV para resgate imediato após SRI; 2–4 mg/kg para reversão de rotina', min:16, max:16, un:'mg/kg'},
+ manut:{txt:'dose única'},
+ alerta:'Reverter o bloqueio não resolve uma via aérea difícil — tenha o plano de resgate cirúrgico pronto.'},
+
+{cat:'via', nome:'Atropina', sub:'bradicardia peri-intubação', apres:'0,25 mg/mL ou 0,5 mg/mL — ampola 1 mL',
+ ataque:{txt:'0,02 mg/kg IV (mínimo 0,1 mg, máximo 0,5 mg na criança; 0,5–1 mg no adulto)', min:0.02, max:0.02, un:'mg/kg', piso:0.1, teto:1},
+ manut:{txt:'repetir a cada 3–5 min, máximo 3 mg no adulto'},
+ nota:'Uso rotineiro na SRI não é recomendado; reserve para bradicardia estabelecida, sobretudo em lactentes.'},
+
+/* ============ ANALGESIA E SEDAÇÃO ============ */
+{cat:'sed', nome:'Fentanil', sub:'analgesia contínua', apres:'50 mcg/mL',
+ ataque:{txt:'1–2 mcg/kg IV, repetir conforme resposta', min:1, max:2, un:'mcg/kg'},
+ manut:{txt:'0,5–3 mcg/kg/h em infusão', min:0.5, max:3, un:'mcg/kg/h'},
+ nota:'Opioide de escolha no trauma: sem liberação histamínica e com menor impacto hemodinâmico que a morfina.'},
+
+{cat:'sed', nome:'Morfina', apres:'10 mg/mL — ampola 1 mL',
+ ataque:{txt:'0,05–0,1 mg/kg IV, repetir a cada 5–10 min', min:0.05, max:0.1, un:'mg/kg'},
+ manut:{txt:'0,01–0,05 mg/kg/h', min:0.01, max:0.05, un:'mg/kg/h'},
+ alerta:'Liberação de histamina e venodilatação podem agravar a hipotensão. Evite no choque não compensado.'},
+
+{cat:'sed', nome:'Cetamina', sub:'dose analgésica', apres:'50 mg/mL',
+ ataque:{txt:'0,1–0,3 mg/kg IV em 10 min', min:0.1, max:0.3, un:'mg/kg'},
+ manut:{txt:'0,1–0,3 mg/kg/h', min:0.1, max:0.3, un:'mg/kg/h'},
+ nota:'Poupa opioide e mantém a pressão. Boa opção na dor refratária do politraumatizado.'},
+
+{cat:'sed', nome:'Midazolam', sub:'sedação contínua', apres:'5 mg/mL',
+ ataque:{txt:'0,02–0,05 mg/kg IV', min:0.02, max:0.05, un:'mg/kg'},
+ manut:{txt:'0,02–0,1 mg/kg/h', min:0.02, max:0.1, un:'mg/kg/h'},
+ nota:'Acúmulo em infusão prolongada, sobretudo com disfunção renal ou hepática.'},
+
+{cat:'sed', nome:'Dexmedetomidina', apres:'100 mcg/mL — diluir para 4 mcg/mL',
+ ataque:{txt:'1 mcg/kg em 10 min — habitualmente omitida no trauma', min:1, max:1, un:'mcg/kg'},
+ manut:{txt:'0,2–1,4 mcg/kg/h', min:0.2, max:1.4, un:'mcg/kg/h'},
+ alerta:'Bradicardia e hipotensão com a dose de ataque. Não serve como sedativo único no paciente em ventilação com sedação profunda.'},
+
+{cat:'sed', nome:'Dipirona', apres:'500 mg/mL — ampola 2 mL',
+ ataque:{txt:'1–2 g IV lento (diluído em 10–20 mL)'},
+ manut:{txt:'1 g IV a cada 6 h'},
+ nota:'Analgésico de base; associe a opioide na dor moderada a intensa.'},
+
+{cat:'sed', nome:'Paracetamol IV', apres:'10 mg/mL — frasco 100 mL',
+ ataque:{txt:'1 g IV em 15 min (15 mg/kg se < 50 kg)', min:15, max:15, un:'mg/kg', teto:1000},
+ manut:{txt:'1 g a cada 6 h — máximo 4 g/dia (3 g se hepatopatia)'},
+ nota:'Reduz o consumo de opioide no politrauma.'},
+
+/* ============ HEMORRAGIA ============ */
+{cat:'hem', nome:'Ácido tranexâmico', sub:'TXA', apres:'50 mg/mL — ampola 5 mL',
+ ataque:{txt:'1 g IV em 10 min, até 3 h do trauma. Criança: 15 mg/kg (máx 1 g)', min:15, max:15, un:'mg/kg', teto:1000},
+ manut:{txt:'1 g IV em infusão de 8 h. Criança: 2 mg/kg/h por 8 h', min:2, max:2, un:'mg/kg/h'},
+ nota:'CRASH‑2: reduz mortalidade no trauma com hemorragia. CRASH‑3: mesma posologia no TCE com Glasgow 9–15, dentro de 3 h.',
+ alerta:'Iniciar após 3 h do trauma pode aumentar a mortalidade por sangramento. Infusão rápida causa hipotensão.'},
+
+{cat:'hem', nome:'Gluconato de cálcio 10%', apres:'ampola 10 mL = 1 g = 4,6 mEq de cálcio',
+ ataque:{txt:'1–3 g IV lento (10–30 mL). Criança: 0,2–0,5 mL/kg', min:0.2, max:0.5, un:'mL/kg', teto:30},
+ manut:{txt:'repetir a cada 4 unidades de hemocomponentes ou conforme cálcio ionizado'},
+ nota:'O citrato dos hemocomponentes quela o cálcio: a hipocalcemia é parte do “losango da morte” junto com acidose, hipotermia e coagulopatia.',
+ alerta:'Não infundir na mesma via que o Ringer lactato ou o bicarbonato.'},
+
+{cat:'hem', nome:'Cloreto de cálcio 10%', apres:'ampola 10 mL = 1 g = 13,6 mEq de cálcio',
+ ataque:{txt:'0,5–1 g IV lento (5–10 mL), preferencialmente em acesso central'},
+ manut:{txt:'guiar pelo cálcio ionizado (alvo > 1,1 mmol/L)'},
+ alerta:'Três vezes mais cálcio elementar que o gluconato e altamente irritante — extravasamento causa necrose.'},
+
+{cat:'hem', nome:'Complexo protrombínico', sub:'CCP — reversão de varfarina', apres:'frasco 500 UI e 1000 UI',
+ ataque:{txt:'25–50 UI/kg IV conforme INR e produto', min:25, max:50, un:'U/kg'},
+ manut:{txt:'dose única; reavaliar INR em 30 min'},
+ alerta:'Sempre associar vitamina K, pois o efeito do CCP dura 6–8 h e a varfarina, dias.'},
+
+{cat:'hem', nome:'Vitamina K', sub:'fitomenadiona', apres:'10 mg/mL — ampola 1 mL',
+ ataque:{txt:'5–10 mg IV lento, diluído, em 20–30 min'},
+ manut:{txt:'repetir a cada 12–24 h conforme INR'},
+ alerta:'Risco de reação anafilactoide com infusão rápida.'},
+
+{cat:'hem', nome:'Idarucizumabe', sub:'reversão da dabigatrana', apres:'50 mg/mL — 2 frascos de 2,5 g',
+ ataque:{txt:'5 g IV (2 × 2,5 g em bólus consecutivos)'},
+ manut:{txt:'dose única; repetir 5 g se sangramento recorrer'}},
+
+{cat:'hem', nome:'Protamina', sub:'reversão de heparina', apres:'10 mg/mL — ampola 5 mL',
+ ataque:{txt:'1 mg para cada 100 UI de heparina administrada nas últimas 2–3 h — máximo 50 mg por dose'},
+ manut:{txt:'reavaliar TTPa'},
+ alerta:'Infusão rápida causa hipotensão grave, bradicardia e reação anafilática.'},
+
+{cat:'hem', nome:'Fibrinogênio / crioprecipitado', apres:'concentrado de fibrinogênio ou crioprecipitado',
+ ataque:{txt:'3–4 g de fibrinogênio, ou 10 unidades de crioprecipitado, se fibrinogênio < 150 mg/dL'},
+ manut:{txt:'repetir guiado por tromboelastometria ou fibrinogênio sérico'}},
+
+{cat:'hem', nome:'Protocolo de transfusão maciça', sub:'não é fármaco — é a prioridade',
+ ataque:{txt:'Hemácias, plasma e plaquetas em proporção próxima de 1:1:1, ativados pelo escore ABC ou por hemorragia evidente'},
+ manut:{txt:'Reavaliar a cada ciclo com gasometria, cálcio ionizado e coagulograma'},
+ nota:'Alvos: temperatura acima de 35 °C, cálcio ionizado acima de 1,1 mmol/L, pH acima de 7,2.',
+ alerta:'Cristaloide em excesso dilui fatores e piora a coagulopatia. Sangue precoce vence volume.'},
+
+/* ============ CHOQUE E PCR ============ */
+{cat:'circ', nome:'Cristaloide balanceado', sub:'Ringer lactato', apres:'bolsa 500 mL e 1000 mL',
+ ataque:{txt:'Adulto: 1 L. Criança: 20 mL/kg em bólus', min:20, max:20, un:'mL/kg', teto:1000},
+ manut:{txt:'Limitar a 1–2 L e passar a hemocomponentes se a resposta não for sustentada'},
+ nota:'Hipotensão permissiva com PAS de 80–90 mmHg até o controle cirúrgico do sangramento.',
+ alerta:'A hipotensão permissiva não vale para TCE, onde o alvo é PAS de pelo menos 110 mmHg, nem para lesão medular.'},
+
+{cat:'circ', nome:'Noradrenalina', apres:'2 mg/mL — ampola 4 mL',
+ ataque:{txt:'sem dose de ataque — iniciar em 0,05 mcg/kg/min', min:0.05, max:0.05, un:'mcg/kg/min'},
+ manut:{txt:'0,05–1 mcg/kg/min, titulado pela pressão média', min:0.05, max:1, un:'mcg/kg/min'},
+ alerta:'No choque hemorrágico, vasopressor não substitui sangue: usar cedo mascara a hipovolemia e piora a perfusão tecidual.'},
+
+{cat:'circ', nome:'Adrenalina', apres:'1 mg/mL — ampola 1 mL',
+ ataque:{txt:'PCR: 1 mg IV a cada 3–5 min. Criança: 0,01 mg/kg. Anafilaxia: 0,3–0,5 mg IM', min:0.01, max:0.01, un:'mg/kg', teto:1},
+ manut:{txt:'0,05–0,5 mcg/kg/min em infusão', min:0.05, max:0.5, un:'mcg/kg/min'},
+ nota:'Na PCR traumática, a prioridade é reverter a causa: hipovolemia, pneumotórax hipertensivo, tamponamento e hipóxia.'},
+
+{cat:'circ', nome:'Vasopressina', apres:'20 U/mL — ampola 1 mL',
+ ataque:{txt:'4 U IV em bólus (protocolos de choque hemorrágico) — uso não universal'},
+ manut:{txt:'0,03–0,04 U/min em dose fixa, sem titulação'},
+ nota:'Poupador de catecolamina no choque refratário; dose fixa independe do peso.'},
+
+{cat:'circ', nome:'Bicarbonato de sódio 8,4%', apres:'ampola 10 mL = 10 mEq',
+ ataque:{txt:'1 mEq/kg IV', min:1, max:1, un:'mEq/kg'},
+ manut:{txt:'guiar por gasometria; repetir 0,5 mEq/kg conforme necessário', min:0.5, max:0.5, un:'mEq/kg'},
+ alerta:'Reservado a hipercalemia com alteração no ECG, síndrome de esmagamento e acidose grave refratária. Sem ventilação adequada, piora a acidose intracelular.'},
+
+{cat:'circ', nome:'Amiodarona', apres:'50 mg/mL — ampola 3 mL',
+ ataque:{txt:'PCR em FV ou TV sem pulso: 300 mg IV, seguida de 150 mg. Taquiarritmia estável: 150 mg em 10 min'},
+ manut:{txt:'1 mg/min por 6 h, depois 0,5 mg/min por 18 h'}},
+
+/* ============ TCE E CONVULSÃO ============ */
+{cat:'neuro', nome:'Salina hipertônica 3%', apres:'bolsa 250 mL e 500 mL',
+ ataque:{txt:'3–5 mL/kg IV em 15–20 min (250–500 mL no adulto)', min:3, max:5, un:'mL/kg'},
+ manut:{txt:'infusão contínua guiada por sódio sérico — alvo 145–155 mEq/L'},
+ nota:'Preferida ao manitol no paciente hipotenso, pois expande o volume em vez de reduzi-lo.',
+ alerta:'Monitorar sódio a cada 4–6 h. Correção rápida em hiponatremia crônica causa desmielinização osmótica.'},
+
+{cat:'neuro', nome:'Salina hipertônica 20%', sub:'resgate de herniação', apres:'ampola 10 mL e 20 mL',
+ ataque:{txt:'30 mL IV em bólus, preferencialmente em acesso central'},
+ manut:{txt:'dose única de resgate; seguir com hipertônica 3% ou manitol'},
+ alerta:'Flebite grave em veia periférica.'},
+
+{cat:'neuro', nome:'Manitol 20%', apres:'frasco 250 mL — 200 mg/mL',
+ ataque:{txt:'0,25–1 g/kg IV em 15–20 min', min:0.25, max:1, un:'g/kg'},
+ manut:{txt:'0,25–0,5 g/kg a cada 4–6 h conforme osmolaridade', min:0.25, max:0.5, un:'g/kg'},
+ alerta:'Diurese osmótica pode agravar a hipovolemia e derrubar a pressão de perfusão cerebral. Evite no paciente hipotenso ou não ressuscitado; suspender se osmolaridade acima de 320 mOsm/L.'},
+
+{cat:'neuro', nome:'Fenitoína', sub:'profilaxia de crise pós-traumática', apres:'50 mg/mL — ampola 5 mL',
+ ataque:{txt:'15–20 mg/kg IV, velocidade máxima de 50 mg/min', min:15, max:20, un:'mg/kg'},
+ manut:{txt:'5 mg/kg/dia dividido a cada 8 h (cerca de 100 mg 8/8h)', min:5, max:5, un:'mg/kg'},
+ nota:'Profilaxia por 7 dias reduz crises precoces no TCE grave, sem alterar as tardias.',
+ alerta:'Diluir apenas em soro fisiológico; precipita em glicose. Infusão rápida causa hipotensão e arritmia. Extravasamento provoca síndrome da luva roxa.'},
+
+{cat:'neuro', nome:'Levetiracetam', apres:'100 mg/mL — frasco 5 mL',
+ ataque:{txt:'20 mg/kg IV em 15 min (1000–1500 mg no adulto)', min:20, max:20, un:'mg/kg', teto:3000},
+ manut:{txt:'500–1000 mg IV a cada 12 h', min:0, max:0, un:''},
+ nota:'Alternativa à fenitoína com menos interações, sem necessidade de nível sérico e sem risco de hipotensão.'},
+
+{cat:'neuro', nome:'Midazolam', sub:'crise convulsiva em curso', apres:'5 mg/mL',
+ ataque:{txt:'0,2 mg/kg IV (máx 10 mg). IM: 10 mg se sem acesso venoso', min:0.2, max:0.2, un:'mg/kg', teto:10},
+ manut:{txt:'0,05–2 mg/kg/h no estado de mal refratário', min:0.05, max:2, un:'mg/kg/h'},
+ alerta:'Prepare a via aérea antes: depressão respiratória é esperada nas doses altas.'},
+
+/* ============ ANTIBIÓTICOS E TÉTANO ============ */
+{cat:'inf', nome:'Cefazolina', sub:'fratura exposta Gustilo I e II', apres:'frasco 1 g',
+ ataque:{txt:'2 g IV o quanto antes (3 g se acima de 120 kg). Criança: 30 mg/kg', min:30, max:30, un:'mg/kg', teto:2000},
+ manut:{txt:'2 g IV a cada 8 h por 24–72 h após o fechamento'},
+ nota:'A primeira dose deve sair na primeira hora — o tempo até o antibiótico pesa mais que o esquema escolhido.'},
+
+{cat:'inf', nome:'Gentamicina', sub:'associar na Gustilo III', apres:'40 mg/mL — ampola 1,5 mL e 2 mL',
+ ataque:{txt:'5–7 mg/kg IV em dose única diária', min:5, max:7, un:'mg/kg'},
+ manut:{txt:'mesma dose a cada 24 h, ajustada à função renal'},
+ alerta:'Nefro e ototoxicidade; evite no paciente com rabdomiólise ou lesão renal aguda.'},
+
+{cat:'inf', nome:'Ceftriaxona', apres:'frasco 1 g',
+ ataque:{txt:'2 g IV'},
+ manut:{txt:'2 g IV a cada 24 h'},
+ nota:'Alternativa em ferimentos contaminados e em trauma cranioencefálico com fístula liquórica.'},
+
+{cat:'inf', nome:'Metronidazol', sub:'contaminação por solo ou fezes', apres:'5 mg/mL — bolsa 100 mL',
+ ataque:{txt:'500 mg IV'},
+ manut:{txt:'500 mg IV a cada 8 h'}},
+
+{cat:'inf', nome:'Penicilina cristalina', sub:'risco de clostrídio', apres:'frasco 5 milhões UI',
+ ataque:{txt:'4 milhões UI IV'},
+ manut:{txt:'4 milhões UI IV a cada 4 h'},
+ nota:'Indicada em ferimento de fazenda, contato com solo ou material fecal.'},
+
+{cat:'inf', nome:'Vacina dT ou dTpa', sub:'profilaxia antitetânica', apres:'0,5 mL — seringa ou frasco',
+ ataque:{txt:'0,5 mL IM no deltoide'},
+ manut:{txt:'completar o esquema em 2 e 6 meses se o histórico for incompleto'},
+ nota:'Indicada se a última dose foi há mais de 5 anos em ferimento sujo, ou há mais de 10 anos em ferimento limpo.'},
+
+{cat:'inf', nome:'Imunoglobulina antitetânica', sub:'IGHAT', apres:'frasco 250 UI',
+ ataque:{txt:'250 UI IM (500 UI se ferimento extenso, contaminado ou com mais de 24 h)'},
+ manut:{txt:'dose única, em local diferente da vacina'},
+ nota:'Indicada em ferimento de alto risco quando o esquema vacinal é incompleto, desconhecido ou o paciente é imunodeprimido.'},
+
+/* ============ SITUAÇÕES ESPECIAIS ============ */
+{cat:'esp', nome:'Reposição na queimadura', sub:'fórmula ABA e Parkland', apres:'Ringer lactato',
+ ataque:{txt:'Adulto: 2 mL × peso × % de superfície queimada nas primeiras 24 h. Criança: 3 mL. Elétrica de alta voltagem: 4 mL'},
+ manut:{txt:'Metade do volume nas primeiras 8 h a partir da hora da queimadura; o restante em 16 h'},
+ formula:'queimadura',
+ nota:'Titule pela diurese: 0,5 mL/kg/h no adulto e 1 mL/kg/h na criança abaixo de 30 kg.',
+ alerta:'A fórmula é ponto de partida, não meta fixa. Infundir volume além do necessário causa síndrome compartimental e edema pulmonar.'},
+
+{cat:'esp', nome:'Naloxona', apres:'0,4 mg/mL — ampola 1 mL',
+ ataque:{txt:'0,04–0,4 mg IV, repetir a cada 2–3 min até resposta ventilatória (máximo 2 mg)'},
+ manut:{txt:'infusão de dois terços da dose efetiva por hora, se opioide de meia-vida longa'},
+ alerta:'Titule pela ventilação, não pelo nível de consciência: reversão abrupta gera dor intensa, agitação e abstinência no politraumatizado.'},
+
+{cat:'esp', nome:'Insulina regular com glicose', sub:'hipercalemia do esmagamento', apres:'100 U/mL',
+ ataque:{txt:'10 U IV com 25 g de glicose (50 mL de glicose a 50%)'},
+ manut:{txt:'repetir conforme potássio; monitorar glicemia por 4–6 h'},
+ alerta:'Na síndrome de esmagamento, trate a hipercalemia antes de liberar o membro comprimido. Hipoglicemia tardia é comum.'},
+
+{cat:'esp', nome:'Sulfato de magnésio', apres:'10% ou 50% — ampola 10 mL',
+ ataque:{txt:'1–2 g IV em 15 min', min:0, max:0, un:''},
+ manut:{txt:'1 g/h conforme nível sérico e função renal'},
+ nota:'Útil em arritmia por torsades e na hipomagnesemia da transfusão maciça.'},
+
+{cat:'esp', nome:'Hidrocortisona', sub:'choque refratário', apres:'frasco 100 mg e 500 mg',
+ ataque:{txt:'100 mg IV'},
+ manut:{txt:'200 mg/dia, em infusão contínua ou 50 mg a cada 6 h'},
+ nota:'Considerar quando o choque persiste apesar de volume adequado e dose alta de vasopressor.'}
+];
+
+/* ---------- utilidades ---------- */
+const fmt = n => {
+  if(!isFinite(n)) return '—';
+  let s;
+  if(n < 1) s = n.toFixed(2);
+  else if(n < 10) s = n.toFixed(1);
+  else if(n < 100) s = n.toFixed(n % 1 === 0 ? 0 : 1);
+  else s = Math.round(n).toString();
+  s = s.replace(/\.0$/,'').replace('.',',');
+  return s;
+};
+
+const SAIDA = {
+  'mg/kg':'mg', 'mcg/kg':'mcg', 'g/kg':'g', 'mL/kg':'mL', 'U/kg':'U', 'mEq/kg':'mEq',
+  'mg/kg/h':'mg/h', 'mcg/kg/h':'mcg/h', 'mcg/kg/min':'mcg/min', 'U/kg/h':'U/h'
+};
+
+function calcular(d, peso){
+  if(!d || !d.un || !SAIDA[d.un] || !peso) return null;
+  let a = d.min * peso, b = d.max * peso;
+  if(d.teto){ a = Math.min(a, d.teto); b = Math.min(b, d.teto); }
+  if(d.piso){ a = Math.max(a, d.piso); b = Math.max(b, d.piso); }
+  const u = SAIDA[d.un];
+  return (Math.abs(a - b) < 1e-9) ? fmt(a) + ' ' + u : fmt(a) + ' – ' + fmt(b) + ' ' + u;
+}
+
+let peso = 70, filtro = 'todos', termo = '';
+
+/* ---------- chips ---------- */
+const elChips = document.getElementById('chips');
+CATS.forEach(c => {
+  const b = document.createElement('button');
+  b.className = 'chip'; b.textContent = c.nome; b.type = 'button';
+  b.setAttribute('aria-pressed', c.id === filtro);
+  b.onclick = () => { filtro = c.id; [...elChips.children].forEach(x => x.setAttribute('aria-pressed', x === b)); render(); };
+  elChips.appendChild(b);
+});
+
+/* ---------- render ---------- */
+const elLista = document.getElementById('lista');
+
+function render(){
+  const t = termo.trim().toLowerCase();
+  const itens = D.filter(d => {
+    if(filtro !== 'todos' && d.cat !== filtro) return false;
+    if(!t) return true;
+    const nomeCat = (CATS.find(c => c.id === d.cat) || {}).nome || '';
+    const blob = [d.nome, d.sub, d.apres, nomeCat, d.nota, d.alerta,
+                  d.ataque && d.ataque.txt, d.manut && d.manut.txt].join(' ').toLowerCase();
+    return blob.includes(t);
+  });
+
+  if(!itens.length){
+    elLista.innerHTML = '<p class="vazio-busca">Nada encontrado. Tente o nome genérico do fármaco ou limpe o filtro.</p>';
+    return;
+  }
+
+  let html = '', catAtual = null;
+  itens.forEach(d => {
+    const cat = CATS.find(c => c.id === d.cat);
+    if(cat && cat.id !== catAtual && (filtro === 'todos' || t)){
+      catAtual = cat.id;
+      html += '<h3 class="grupo">' + cat.nome + '</h3>';
+    }
+    const cor = cat ? cat.cor : 'var(--muted)';
+    html += '<article class="card" style="--ch:' + cor + '">';
+    html += '<h2>' + d.nome + (d.sub ? '<em>' + d.sub + '</em>' : '') + '</h2>';
+    if(d.apres) html += '<p class="apres">' + d.apres + '</p>';
+
+    html += bloco('Ataque', d.ataque, d);
+    html += bloco('Manutenção', d.manut, d);
+
+    if(d.nota)   html += '<p class="nota">' + d.nota + '</p>';
+    if(d.alerta) html += '<p class="alerta"><b>Atenção.</b> ' + d.alerta + '</p>';
+    html += '</article>';
+  });
+  elLista.innerHTML = html;
+}
+
+function bloco(rotulo, d, item){
+  if(!d) return '';
+  let out = '<div class="linha"><div class="rot">' + rotulo + '</div><div class="val">';
+  out += '<div class="dose">' + d.txt + '</div>';
+
+  if(item.formula === 'queimadura' && rotulo === 'Ataque'){
+    out += '<div class="calc">' + fmt(2 * peso) + ' mL por 1% de SCQ</div>';
+    out += '<div class="nota">Ex.: 20% de superfície queimada = ' + fmt(2 * peso * 20) + ' mL em 24 h, sendo ' + fmt(peso * 20) + ' mL nas primeiras 8 h.</div>';
+  } else {
+    const c = calcular(d, peso);
+    if(c) out += '<div class="calc">' + c + '</div>';
+  }
+  out += '</div></div>';
+  return out;
+}
+
+/* ---------- eventos ---------- */
+const elPeso = document.getElementById('peso');
+elPeso.addEventListener('input', e => {
+  const v = parseFloat(e.target.value);
+  peso = (isFinite(v) && v > 0) ? v : 0;
+  render();
+});
+document.querySelectorAll('.quick button').forEach(b => {
+  b.onclick = () => { elPeso.value = b.dataset.p; peso = +b.dataset.p; render(); };
+});
+document.getElementById('busca').addEventListener('input', e => { termo = e.target.value; render(); });
+document.getElementById('okAviso').onclick = () => { document.getElementById('aviso').remove(); };
+
+render();
+
+/* funciona sem internet depois da primeira abertura */
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
