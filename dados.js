@@ -1,7 +1,15 @@
 /* ============================================================
    DOSES NA EMERGÊNCIA — base de dados
    Separada do código para permitir revisão do conteúdo
-   por quem não programa. Última revisão: 2026-10-05
+   por quem não programa. Última revisão: 2026-10-28
+
+   Autor: Jorge Henrique Carvalho Jales
+   Estudante de Medicina — Universidade Federal Rural
+   do Semi-Árido (UFERSA), Mossoró, Rio Grande do Norte, Brasil
+
+   © 2026 Jorge Henrique Carvalho Jales. Todos os direitos reservados.
+   Obra protegida pela Lei nº 9.610/1998 (Direitos Autorais) e pela
+   Lei nº 9.609/1998 (Programa de Computador).
    ============================================================
 
    CAMPOS DE CADA FÁRMACO

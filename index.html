@@ -1,4 +1,21 @@
 <!DOCTYPE html>
+<!--
+  ============================================================
+  DOSES NA EMERGÊNCIA
+  Aplicativo de consulta de doses e protocolos na emergência.
+
+  Autor: Jorge Henrique Carvalho Jales
+  Estudante de Medicina — Universidade Federal Rural
+  do Semi-Árido (UFERSA), Mossoró, Rio Grande do Norte, Brasil
+
+  © 2026 Jorge Henrique Carvalho Jales. Todos os direitos reservados.
+  Obra protegida pela Lei nº 9.610/1998 (Direitos Autorais) e pela
+  Lei nº 9.609/1998 (Programa de Computador).
+
+  Material de finalidade educacional. A remoção ou alteração desta
+  atribuição de autoria constitui violação de direito autoral.
+  ============================================================
+-->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
@@ -6,7 +23,9 @@
 <title>Doses na Emergência</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0E1418">
-<meta name="description" content="Doses de ataque e manutenção na emergência, calculadas por peso, com protocolos passo a passo.">
+<meta name="description" content="Doses de ataque e manutenção na emergência, calculadas por peso, com protocolos passo a passo. Autoria de Jorge Henrique Carvalho Jales, estudante de Medicina na UFERSA.">
+<meta name="author" content="Jorge Henrique Carvalho Jales">
+<meta name="copyright" content="© 2026 Jorge Henrique Carvalho Jales">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,9 +51,11 @@ body{background:var(--ground);color:var(--ink);font-family:var(--sans);
 /* ---------- barra fixa ---------- */
 .monitor{position:sticky;top:0;z-index:50;
   background:linear-gradient(180deg,#0E1418 80%,rgba(14,20,24,0));padding-top:10px}
-.brand{display:flex;align-items:baseline;gap:9px;padding-bottom:9px}
+.brand{padding-bottom:9px}
+.brand .l1{display:flex;align-items:baseline;gap:9px}
 .brand h1{font-size:19px;font-weight:650;letter-spacing:-.015em;margin:0}
-.brand span{font-size:12.5px;color:var(--muted)}
+.brand .l1 span{font-size:12.5px;color:var(--muted)}
+.autoria-topo{font-size:11px;color:#5E747D;margin-top:2px;letter-spacing:.01em}
 
 .tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);
   border-radius:11px;padding:3px;margin-bottom:9px}
@@ -161,13 +182,24 @@ body{background:var(--ground);color:var(--ink);font-family:var(--sans);
 
 .vazio-busca{color:var(--muted);font-size:14.5px;padding:30px 4px;text-align:center}
 footer{color:#5E747D;font-size:12.5px;padding:26px 0 10px;line-height:1.6}
+
+/* ---------- assinatura de autoria ---------- */
+.assinatura{margin-top:22px;padding:15px 16px;background:var(--surface);
+  border:1px solid var(--line);border-radius:11px}
+.assinatura .nome{font-size:14.5px;font-weight:650;color:var(--ink);letter-spacing:-.01em}
+.assinatura .vinculo{font-size:12.5px;color:var(--muted);margin-top:3px}
+.assinatura .direitos{font-size:11.5px;color:#5E747D;margin-top:10px;
+  padding-top:10px;border-top:1px solid var(--line);line-height:1.55}
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <div class="monitor">
-  <div class="brand"><h1>Doses na Emergência</h1><span>ataque e manutenção</span></div>
+  <div class="brand">
+    <div class="l1"><h1>Doses na Emergência</h1><span>ataque e manutenção</span></div>
+    <div class="autoria-topo">por Jorge Henrique Carvalho Jales · Medicina UFERSA</div>
+  </div>
 
   <div class="tabs" role="tablist">
     <button type="button" role="tab" id="tab-farm" aria-selected="true">Fármacos</button>
@@ -216,6 +248,16 @@ footer{color:#5E747D;font-size:12.5px;padding:26px 0 10px;line-height:1.6}
 <footer>
   Informe altura e sexo para habilitar o cálculo por peso ideal e ajustado.<br>
   Revise cada valor com a referência da sua instituição antes do uso.
+
+  <div class="assinatura">
+    <div class="nome">Jorge Henrique Carvalho Jales</div>
+    <div class="vinculo">Estudante de Medicina — Universidade Federal Rural do Semi-Árido (UFERSA)</div>
+    <div class="direitos">
+      Concepção, conteúdo e desenvolvimento do aplicativo.<br>
+      © 2026 Jorge Henrique Carvalho Jales. Todos os direitos reservados.<br>
+      Obra protegida pelas Leis nº 9.610/1998 e nº 9.609/1998.
+    </div>
+  </div>
 </footer>
 
 </div>

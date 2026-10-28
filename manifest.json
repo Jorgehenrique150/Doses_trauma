@@ -1,7 +1,9 @@
 {
   "name": "Doses na Emergência",
   "short_name": "Emergência",
-  "description": "Doses de ataque e manutenção na emergência, calculadas por peso, com protocolos passo a passo.",
+  "description": "Doses de ataque e manutenção na emergência, calculadas por peso, com protocolos passo a passo. Autoria de Jorge Henrique Carvalho Jales, estudante de Medicina na UFERSA.",
+  "author": "Jorge Henrique Carvalho Jales",
+  "copyright": "© 2026 Jorge Henrique Carvalho Jales. Todos os direitos reservados.",
   "lang": "pt-BR",
   "start_url": "./index.html",
   "scope": "./",

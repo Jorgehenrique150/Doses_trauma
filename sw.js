@@ -1,4 +1,12 @@
-const CACHE = 'doses-emergencia-v3';
+/* ============================================================
+   DOSES NA EMERGÊNCIA — service worker (cache offline)
+
+   Autor: Jorge Henrique Carvalho Jales
+   Estudante de Medicina — UFERSA, Mossoró, RN, Brasil
+   © 2026 Jorge Henrique Carvalho Jales. Todos os direitos reservados.
+   ============================================================ */
+
+const CACHE = 'doses-emergencia-v4';
 const ARQUIVOS = [
   './','./index.html','./dados.js','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png'
