@@ -6,7 +6,7 @@
    © 2026 Jorge Henrique Carvalho Jales. Todos os direitos reservados.
    ============================================================ */
 
-const CACHE = 'doses-emergencia-v4';
+const CACHE = 'doses-emergencia-v5';
 const ARQUIVOS = [
   './','./index.html','./dados.js','./manifest.json',
   './icon-192.png','./icon-512.png','./apple-touch-icon.png'
